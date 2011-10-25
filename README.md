@@ -101,3 +101,4 @@ This means when verifying receipts during a review you must failover to check re
 
 ### License
 
+See LICENSE file.
