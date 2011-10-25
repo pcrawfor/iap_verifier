@@ -1,7 +1,5 @@
 # IAPVerifier - Node.js verification library for iOS in app purchase receipts
 
-IAPVerifier was written by Paul Crawford - see license at end of README
-
 ## Installation
 
 IAPVerifier is available via npm
