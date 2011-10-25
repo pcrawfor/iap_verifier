@@ -1,0 +1,12 @@
+{
+  "name"         : "iap_verifier",
+  "version"      : "0.0.1",
+  "description"  : "iOS In App Purchase Receipt Verification library",
+  "keywords"     : ["ios", "iap", "in app purchase", "iphone", "ipad", "verifier", "verify", "verify in app purchase"],
+  "homepage"     : "https://github.com/pcrawfor/iap_verifier",
+  "author"       : "Paul Crawford <paul@cometcoast.com> (http://cometcoast.com)",  
+  "main"         : "./lib/iap_verifier",
+  "directories"  : {"lib"  : "./lib"},
+  "repository"   : {"type" : "git",  "url": "https://github.com/pcrawfor/iap_verifier.git"},
+  "engines"      : {"node" : ">= 0.4.7"}
+}
