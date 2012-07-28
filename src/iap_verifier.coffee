@@ -96,8 +96,8 @@ class IAPVerifier
     This error code is an indication that the app may be receiving app store review requests.    
   ###
   
-  verifyWithRetry: (receipt_data, receipt, cb) ->      
-    @verify receipt_data, receipt, @requestOptions(), (valid, msg, data) =>
+  verifyWithRetry: (receiptData, receipt, cb) ->      
+    @verify receiptData, receipt, @requestOptions(), (valid, msg, data) =>
       # on a 21007 error retry the request for the Sandbox environment (if the current environment is Production)
       if (21007 == data.status) && (@productionHost == @host)
         # retry...
@@ -105,7 +105,7 @@ class IAPVerifier
         options = @requestOptions()
         options.host = @sandboxHost
           
-        @verify receipt_data, receipt, options, (valid, msg, data) ->
+        @verify receiptData, receipt, options, (valid, msg, data) ->
           console.log("STATUS #{data.status}")
           cb(valid, msg, data)
       else
