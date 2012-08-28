@@ -38,6 +38,8 @@ The callback function includes isValid which indicates whether the receipt is fo
 #### To verify a receipt:
 
 Javascript:
+    
+    var IAPVerifier = require('iap_verifier');
 
     // Verify a receipt
     receipt = 'raw_receipt_data_from_ios'
@@ -54,6 +56,8 @@ Javascript:
 
 CoffeeScript:
   
+    IAPVerifier = require('iap_verifier')
+
     # Verify a receipt
     receipt = 'raw_receipt_data_from_ios'
 
