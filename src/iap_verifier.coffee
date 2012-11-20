@@ -135,6 +135,9 @@ class IAPVerifier
 
       response.on 'data', (data) =>
         if @debug then console.log("data #{data}")
+        if response.statusCode != 200
+          if @debug then console.log("error: " + data)
+          return cb false, data
         # check response code to interpret verification result
         responseData = JSON.parse(data)        
         @processStatus(responseData, cb)
