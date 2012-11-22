@@ -60,7 +60,7 @@ class IAPVerifier
     Auto-renewing subscriptions can return a larger number of reponses, in the event that the response is 21007
     the function will auto-retry to process the receipt against the Sandbox environment.
     
-    The 21007 status code is indicative of what will happen when the App Store Review team is trying to test a subscriptiong while reviewing an application
+    The 21007 status code is indicative of what will happen when the App Store Review team is trying to test a subscription while reviewing an application
   
     params:
       receipt   - the receipt string
