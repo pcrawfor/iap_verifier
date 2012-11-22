@@ -44,7 +44,7 @@ Javascript:
     // Verify a receipt
     receipt = 'raw_receipt_data_from_ios'
     
-    var client = new IAPVerifier();
+    var client = new IAPVerifier(itunes_password);
     client.verifyReceipt(receipt, function(valid, msg, data) {
       if (valid) {
         // update status of payment in your system
@@ -61,7 +61,7 @@ CoffeeScript:
     # Verify a receipt
     receipt = 'raw_receipt_data_from_ios'
 
-    client = new IAPVerifier()
+    client = new IAPVerifier(itunes_password)
     client.verifyReceipt receipt, (valid, msg, data) ->
       if valid
         console.log("Valid receipt")
