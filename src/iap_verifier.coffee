@@ -46,7 +46,7 @@ class IAPVerifier
     21007: { message:"Sandbox receipt sent to Production environment", valid: false, error: true, redirect: true } # special case for app review handling - forward any request that is intended for the Sandbox but was sent to Production, this is what the app review team does
     21008: { message:"Production receipt sent to Sandbox environment", valid: false, error: true }    
   
-  constructor: (@password, @production=true) ->    
+  constructor: (@password, @production=true, @debug=false) ->    
     @host = if @production then @productionHost else @sandboxHost          
     @port = 443
     @path = '/verifyReceipt'
@@ -101,22 +101,22 @@ class IAPVerifier
       # on a 21007 error retry the request for the Sandbox environment (if the current environment is Production)
       if (21007 == data.status) && (@productionHost == @host)
         # retry...
-        console.log("Retry on Sandbox")        
+        if @debug then console.log("Retry on Sandbox")        
         options = @requestOptions()
         options.host = @sandboxHost
           
         @verify receiptData, receipt, options, (valid, msg, data) ->
-          console.log("STATUS #{data.status}")
+          if @debug then console.log("STATUS #{data.status}")
           cb(valid, msg, data)
       else
-        console.log "else"
+        if @debug then console.log "else"
         cb(valid, msg, data)
   
   ###
     verify the receipt data
   ###
   verify: (data, receipt, options, cb) ->
-    console.log("verify!")
+    if @debug then console.log("verify!")
     
     buffer = new Buffer(receipt)
     encoded = buffer.toString('base64')
@@ -130,11 +130,14 @@ class IAPVerifier
     }    
     
     request = https.request options, (response) =>      
-      console.log("statusCode: #{response.statusCode}")
-      console.log("headers: #{response.headers}")
+      if @debug then console.log("statusCode: #{response.statusCode}")
+      if @debug then console.log("headers: #{response.headers}")
 
       response.on 'data', (data) =>
-        console.log("data #{data}")
+        if @debug then console.log("data #{data}")
+        if response.statusCode != 200
+          if @debug then console.log("error: " + data)
+          return cb false, data
         # check response code to interpret verification result
         responseData = JSON.parse(data)        
         @processStatus(responseData, cb)
@@ -143,12 +146,12 @@ class IAPVerifier
     request.end()
 
     request.on 'error', (err) ->
-      console.log("In App purchase verification error: #{err}")
+      if @debug then console.log("In App purchase verification error: #{err}")
       
   
   processStatus: (data, cb) ->
     # evaluate status code and take an action, write any new receipts to the database
-    console.log("Process status #{data.status}")
+    if @debug then console.log("Process status #{data.status}")
     #todo: check status code and react appropriately
     response = @responseCodes[data.status]              
     cb(response.valid, response.message, data)
