@@ -16,6 +16,8 @@ There are two environments for Apple's verification servers SandBox and Producti
 
 ### Usage
   
+When instantiating the verifier you need to provide the itunes shared secret for the application you are verifying receipts for.  This can be found on the itunes connect page for the applications' in app purchases.
+  
 The IAPVerifier API is very simple, create an instance of IAPVerifier and then call verifyReceipt on it with a callback.  The first argument is the receipt data string, the second is a boolean indicating whether or not the receipt data is encoded as base64 already or not the last argument is the callback which includes three parameters.
 
     verifyReceipt(rawReceipt, function(isValid, message, data){
@@ -44,7 +46,7 @@ Javascript:
     // Verify a receipt
     receipt = 'raw_receipt_data_from_ios'
     
-    var client = new IAPVerifier(itunes_password);
+    var client = new IAPVerifier(itunes_shared_secret);
     client.verifyReceipt(receipt, function(valid, msg, data) {
       if (valid) {
         // update status of payment in your system
@@ -61,7 +63,7 @@ CoffeeScript:
     # Verify a receipt
     receipt = 'raw_receipt_data_from_ios'
 
-    client = new IAPVerifier(itunes_password)
+    client = new IAPVerifier(itunes_shared_secret)
     client.verifyReceipt receipt, (valid, msg, data) ->
       if valid
         console.log("Valid receipt")
