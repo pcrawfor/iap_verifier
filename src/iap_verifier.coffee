@@ -153,7 +153,13 @@ class IAPVerifier
     # evaluate status code and take an action, write any new receipts to the database
     if @debug then console.log("Process status #{data.status}")
     #todo: check status code and react appropriately
-    response = @responseCodes[data.status]              
+    response = @responseCodes[data.status]
+    # Try not to blow up if we encounter an unknown/unexepected status code
+    unless response
+      response =
+        valid: false
+        error: true
+        message: "Unknown status code: " + data.status       
     cb(response.valid, response.message, data)
   
   requestOptions: ->
