@@ -79,7 +79,7 @@ Javascript:
     receipt = 'raw_receipt_data_from_ios'
     
     var client = new IAPVerifier('your_secret_key_from_itunes')
-    client.verifyAutorenewingReceipt(receipt, function(valid, msg, data){
+    client.verifyAutoRenewReceipt(receipt, function(valid, msg, data){
       if(valid) {
         // update status of payment in your system
       }
@@ -91,7 +91,7 @@ CoffeeScript:
     receipt = 'raw_receipt_data_from_ios'
 
     client = new IAPVerifier('your_secret_key_from_itunes')
-    client.verifyAutorenewingReceipt receipt, (valid, msg, data) ->
+    client.verifyAutoRenewReceipt receipt, (valid, msg, data) ->
       if valid
         console.log("Valid receipt")
       else
