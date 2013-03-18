@@ -112,7 +112,7 @@ class IAPVerifier
        buffer = new Buffer(receipt)
        encoded = buffer.toString('base64')
        
-    data['receipt-data'] = encoded
+    receiptData['receipt-data'] = encoded
     @verify receiptData, @requestOptions(), (valid, msg, data) =>
       # on a 21007 error retry the request for the Sandbox environment (if the current environment is Production)
       if (21007 == data.status) && (@productionHost == @host)
