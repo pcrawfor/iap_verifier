@@ -128,19 +128,27 @@ class IAPVerifier
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': post_data.length
     }    
-    
+            
     request = https.request options, (response) =>      
       if @debug then console.log("statusCode: #{response.statusCode}")
       if @debug then console.log("headers: #{response.headers}")
+         
+      apple_response_arr = []
 
       response.on 'data', (data) =>
         if @debug then console.log("data #{data}")
         if response.statusCode != 200
           if @debug then console.log("error: " + data)
-          return cb false, data
-        # check response code to interpret verification result
-        responseData = JSON.parse(data)        
+          return cb(false, "error", null)          
+        
+        apple_response_arr.push(data)        
+              
+      response.on 'end', () =>            
+        totalData = apple_response_arr.join('')
+        if @debug then console.log "end: apple response: #{totalData}"
+        responseData = JSON.parse(totalData)
         @processStatus(responseData, cb)
+
       
     request.write(post_data)
     request.end()
