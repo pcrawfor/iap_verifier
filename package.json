@@ -1,6 +1,6 @@
 {
   "name"         : "iap_verifier",
-  "version"      : "0.0.5",
+  "version"      : "0.0.6",
   "description"  : "iOS In App Purchase Receipt Verification library",
   "keywords"     : ["ios", "iap", "in app purchase", "iphone", "ipad", "verifier", "verify", "verify in app purchase"],
   "homepage"     : "https://github.com/pcrawfor/iap_verifier",
