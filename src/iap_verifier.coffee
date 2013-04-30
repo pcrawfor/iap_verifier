@@ -64,14 +64,18 @@ class IAPVerifier
   
     params:
       receipt   - the receipt string
+      isBase64  - Is the receipt already encoded in base64? Optional, defaults to false.
       cb        - callback function that will return the status code and results for the verification call
   ###
-  verifyAutoRenewReceipt: (receipt, cb) ->
+  verifyAutoRenewReceipt: (receipt, isBase64, cb) ->
+    if cb is undefined
+      cb = isBase64
+      isBase64 = false
     data =
       'receipt-data': "",
       password: @password
           
-    @verifyWithRetry(data, receipt, cb)
+    @verifyWithRetry(data, receipt, isBase64, cb)
     
     
   ###
@@ -81,13 +85,17 @@ class IAPVerifier
     
     params:
       receipt   - the receipt string
+      isBase64  - Is the receipt already encoded in base64? Optional, defaults to false.
       cb        - callback function that will return the status code and results for the verification call
   ###
-  verifyReceipt: (receipt, cb) ->
+  verifyReceipt: (receipt, isBase64, cb) ->
+    if cb is undefined
+      cb = isBase64
+      isBase64 = false
     data = 
       'receipt-data': ""
   
-    @verifyWithRetry(data, receipt, cb)
+    @verifyWithRetry(data, receipt, isBase64, cb)
   
   ###
     verifyWithRetry
@@ -96,8 +104,16 @@ class IAPVerifier
     This error code is an indication that the app may be receiving app store review requests.    
   ###
   
-  verifyWithRetry: (receiptData, receipt, cb) ->      
-    @verify receiptData, receipt, @requestOptions(), (valid, msg, data) =>
+  verifyWithRetry: (receiptData, receipt, isBase64, cb) ->      
+    encoded = null
+    if isBase64
+      encoded = receipt
+    else
+       buffer = new Buffer(receipt)
+       encoded = buffer.toString('base64')
+       
+    receiptData['receipt-data'] = encoded
+    @verify receiptData, @requestOptions(), (valid, msg, data) =>
       # on a 21007 error retry the request for the Sandbox environment (if the current environment is Production)
       if (21007 == data.status) && (@productionHost == @host)
         # retry...
@@ -105,7 +121,7 @@ class IAPVerifier
         options = @requestOptions()
         options.host = @sandboxHost
           
-        @verify receiptData, receipt, options, (valid, msg, data) ->
+        @verify receiptData, options, (valid, msg, data) ->
           if @debug then console.log("STATUS #{data.status}")
           cb(valid, msg, data)
       else
@@ -115,13 +131,9 @@ class IAPVerifier
   ###
     verify the receipt data
   ###
-  verify: (data, receipt, options, cb) ->
+  verify: (data, options, cb) ->
     if @debug then console.log("verify!")
     
-    buffer = new Buffer(receipt)
-    encoded = buffer.toString('base64')
-        
-    data['receipt-data'] = encoded
     post_data = JSON.stringify(data)
         
     options.headers = {
