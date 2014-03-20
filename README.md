@@ -28,10 +28,9 @@ The IAPVerifier API is very simple, create an instance of IAPVerifier and then c
       // do something with the verification info...
     });
     
-The callback has four params sent back to it, these are:
+The callback has three params sent back to it, these are:
 
 * isValid - boolean indicating that the receipt has valid or the auto-renewing subscription is active
-* statusCode - the status code returned by Apple's server
 * message - the message associated in Apple's system with the statusCode
 * data - the receipt data returned by Apple's server
 
