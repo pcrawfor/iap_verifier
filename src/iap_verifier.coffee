@@ -122,7 +122,7 @@ class IAPVerifier
         options.host = @sandboxHost
           
         @verify receiptData, options, (valid, msg, data) ->
-          if @debug then console.log("STATUS #{data.status}")
+          if @debug then console.log("STATUS #{data?.status}")
           cb(valid, msg, data)
       else
         if @debug then console.log "else"
