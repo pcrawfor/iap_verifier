@@ -115,7 +115,7 @@ class IAPVerifier
     receiptData['receipt-data'] = encoded
     @verify receiptData, @requestOptions(), (valid, msg, data) =>
       # on a 21007 error retry the request for the Sandbox environment (if the current environment is Production)
-      if (21007 == data.status) && (@productionHost == @host)
+      if (21007 == data?.status) && (@productionHost == @host)
         # retry...
         if @debug then console.log("Retry on Sandbox")        
         options = @requestOptions()
