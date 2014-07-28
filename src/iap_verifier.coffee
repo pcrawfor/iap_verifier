@@ -158,7 +158,11 @@ class IAPVerifier
       response.on 'end', () =>            
         totalData = apple_response_arr.join('')
         if @debug then console.log "end: apple response: #{totalData}"
-        responseData = JSON.parse(totalData)
+        try
+          responseData = JSON.parse(totalData)
+        catch err
+          if @debug then console.log("error: " + err)
+          return cb(false, "error", err)
         @processStatus(responseData, cb)
 
       
