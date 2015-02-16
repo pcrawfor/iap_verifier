@@ -152,7 +152,7 @@ class IAPVerifier
         
         apple_response_arr.push(data)        
               
-      response.on 'end', () =>            
+      response.on 'end', () =>
         totalData = apple_response_arr.join('')
         if @debug then console.log "end: apple response: #{totalData}"
         if response.statusCode != 200
@@ -166,12 +166,17 @@ class IAPVerifier
           return cb(false, "error", err)
         @processStatus(responseData, cb)
 
-      
+      response.on 'error', (err) =>
+        if @debug then console.log 'error reading response: ' + err
+        cb false, 'error', err
+
+
     request.write(post_data)
     request.end()
 
     request.on 'error', (err) ->
       if @debug then console.log("In App purchase verification error: #{err}")
+      cb false, 'error', err
       
   
   processStatus: (data, cb) ->
