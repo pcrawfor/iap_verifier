@@ -149,15 +149,16 @@ class IAPVerifier
 
       response.on 'data', (data) =>
         if @debug then console.log("data #{data}")
-        if response.statusCode != 200
-          if @debug then console.log("error: " + data)
-          return cb(false, "error", null)          
         
         apple_response_arr.push(data)        
               
       response.on 'end', () =>            
         totalData = apple_response_arr.join('')
         if @debug then console.log "end: apple response: #{totalData}"
+        if response.statusCode != 200
+          err = "statusCode not success: #{response.statusCode}";
+          if @debug then console.log("error: " + err)
+          return cb(false, "error", err)
         try
           responseData = JSON.parse(totalData)
         catch err
