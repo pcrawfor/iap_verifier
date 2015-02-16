@@ -46,7 +46,7 @@ class IAPVerifier
     21007: { message:"Sandbox receipt sent to Production environment", valid: false, error: true, redirect: true } # special case for app review handling - forward any request that is intended for the Sandbox but was sent to Production, this is what the app review team does
     21008: { message:"Production receipt sent to Sandbox environment", valid: false, error: true }    
   
-  constructor: (@password, @production=true, @debug=false) ->    
+  constructor: (@password, @production=true, @debug=false, @timeout) ->
     @host = if @production then @productionHost else @sandboxHost          
     @port = 443
     @path = '/verifyReceipt'
@@ -168,9 +168,10 @@ class IAPVerifier
 
       response.on 'error', (err) =>
         if @debug then console.log 'error reading response: ' + err
-        cb false, 'error', err
+        cb false, "error", err
 
 
+    if @timeout? then request.setTimeout @timeout
     request.write(post_data)
     request.end()
 
