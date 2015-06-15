@@ -46,7 +46,7 @@ class IAPVerifier
     21007: { message:"Sandbox receipt sent to Production environment", valid: false, error: true, redirect: true } # special case for app review handling - forward any request that is intended for the Sandbox but was sent to Production, this is what the app review team does
     21008: { message:"Production receipt sent to Sandbox environment", valid: false, error: true }    
   
-  constructor: (@password, @production=true, @debug=false) ->    
+  constructor: (@password, @production=true, @debug=false, @timeout) ->
     @host = if @production then @productionHost else @sandboxHost          
     @port = 443
     @path = '/verifyReceipt'
@@ -149,15 +149,16 @@ class IAPVerifier
 
       response.on 'data', (data) =>
         if @debug then console.log("data #{data}")
-        if response.statusCode != 200
-          if @debug then console.log("error: " + data)
-          return cb(false, "error", null)          
         
         apple_response_arr.push(data)        
               
-      response.on 'end', () =>            
+      response.on 'end', () =>
         totalData = apple_response_arr.join('')
         if @debug then console.log "end: apple response: #{totalData}"
+        if response.statusCode != 200
+          err = "statusCode not success: #{response.statusCode}";
+          if @debug then console.log("error: " + err)
+          return cb(false, "error", err)
         try
           responseData = JSON.parse(totalData)
         catch err
@@ -165,12 +166,18 @@ class IAPVerifier
           return cb(false, "error", err)
         @processStatus(responseData, cb)
 
-      
+      response.on 'error', (err) =>
+        if @debug then console.log 'error reading response: ' + err
+        cb false, "error", err
+
+
+    if @timeout? then request.setTimeout @timeout
     request.write(post_data)
     request.end()
 
     request.on 'error', (err) ->
       if @debug then console.log("In App purchase verification error: #{err}")
+      cb false, 'error', err
       
   
   processStatus: (data, cb) ->
