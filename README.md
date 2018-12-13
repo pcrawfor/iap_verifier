@@ -1,5 +1,7 @@
 # IAPVerifier - Node.js verification library for iOS in app purchase receipts
 
+## WARNING: THIS PACKAGE IS NO LONGER MAINTAINED
+
 ## Installation
 
 IAPVerifier is available via npm
